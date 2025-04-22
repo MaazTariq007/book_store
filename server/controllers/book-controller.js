@@ -18,7 +18,7 @@ const getAllBooks = async (request, response) => {
   }
 };
 // ================================================
-const getAllBookById = async (req, res) => {
+const getAllBookById = async (request, response) => {
   try {
     connectToDb();
     const bookById = await Book.findById(request.params.id);
@@ -40,7 +40,7 @@ const getAllBookById = async (req, res) => {
 };
 // ================================================
 
-const DeleteBookById = async (req, res) => {
+const DeleteBookById = async (request, response) => {
   try {
     connectToDb();
     const bookToBeDeletedById = await Book.findById(request.params.id);
@@ -64,7 +64,7 @@ const DeleteBookById = async (req, res) => {
 
 // ================================================
 
-const UpdateBookById = async (req, res) => {
+const UpdateBookById = async (request, response) => {
   try {
     connectToDb();
 
@@ -88,12 +88,12 @@ const UpdateBookById = async (req, res) => {
 };
 
 // ================================================
-const CreateBookById = async (req, res) => {
+const CreateBookById = async (request, response) => {
   try {
     const { title, author, price, publishDate } = request.body;
 
     if (!title || !author || !price || !publishDate) {
-      response.status(404);
+      response.status(400);
       throw new Error("All fields are required");
     }
 
@@ -105,15 +105,18 @@ const CreateBookById = async (req, res) => {
       price,
       publishDate,
     });
-    responce.status(201);
-    responce.json({
+
+    response.status(201).json({
       success: true,
-      msg: `Book Created Successfully `,
-      newlycreatedBook,
+      msg: "Book Created Successfully",
+      data: newlyCreatedBook,
     });
   } catch (error) {
-    response.status(404);
-    throw new Error(error.message);
+    response.status(500).json({
+      success: false,
+      msg: error.message,
+      asd: "asdass",
+    });
   }
 };
 
