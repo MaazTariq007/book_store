@@ -1,5 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
+import cors from "cors";
 import bookRouter from "./routes/book-routes.js";
 import errorHanlder from "./middlewares/error-handler.js";
 
@@ -8,6 +9,7 @@ const port = process.env.PORT || 3001;
 
 const app = express();
 
+app.use(cors({ origin: "*" }));
 app.use(express.json());
 
 app.use("/api/v1/books", bookRouter);

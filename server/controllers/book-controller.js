@@ -115,7 +115,6 @@ const CreateBookById = async (request, response) => {
     response.status(500).json({
       success: false,
       msg: error.message,
-      asd: "asdass",
     });
   }
 };
