@@ -1,17 +1,37 @@
-// BookForm.js
-import React, { useContext } from "react";
-import { GlobalState } from "../context/globalContext";
+import axios from "axios";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 
 const Create = () => {
-  const { formData, setFormData, handleOnSubmit } = useContext(GlobalState);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+  const InitFormData = {
+    title: "",
+    author: "", 
+    price: "",
+    publishDate: "",
+  }
+
+  const [formData, setFormData] = useState(
+    InitFormData
+  );
+  const [loading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
+  const handleOnSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      setIsLoading(true)
+      await axios.post("http://localhost:3000/api/v1/books/", formData);
+      setFormData(InitFormData);
+      navigate("/");
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+
+  }
 
   return (
     <form
@@ -29,7 +49,7 @@ const Create = () => {
           type="text"
           name="title"
           value={formData.title}
-          onChange={handleChange}
+          onChange={(e) => setFormData({ ...formData, title: e.target.value })}
           className="w-full px-3 py-2 border rounded-lg shadow-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600 focus:outline-none focus:ring focus:ring-blue-400"
           placeholder="Enter title"
         />
@@ -43,7 +63,7 @@ const Create = () => {
           type="text"
           name="author"
           value={formData.author}
-          onChange={handleChange}
+          onChange={(e) => setFormData({ ...formData, author: e.target.value })}
           className="w-full px-3 py-2 border rounded-lg shadow-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600 focus:outline-none focus:ring focus:ring-blue-400"
           placeholder="Enter author"
         />
@@ -57,7 +77,7 @@ const Create = () => {
           type="number"
           name="price"
           value={formData.price}
-          onChange={handleChange}
+          onChange={(e) => setFormData({ ...formData, price: e.target.value })}
           className="w-full px-3 py-2 border rounded-lg shadow-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600 focus:outline-none focus:ring focus:ring-blue-400"
           placeholder="Enter price"
         />
@@ -71,17 +91,17 @@ const Create = () => {
           type="date"
           name="publishDate"
           value={formData.publishDate}
-          onChange={handleChange}
+          onChange={(e) => setFormData({ ...formData, publishDate: e.target.value })}
           className="w-full px-3 py-2 border rounded-lg shadow-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600 focus:outline-none focus:ring focus:ring-blue-400"
         />
       </div>
 
       <button
-
+        disabled={loading}
         type="submit"
         className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
       >
-        Submit
+        {loading ? "loading..." : "submit"}
       </button>
     </form>
   );
